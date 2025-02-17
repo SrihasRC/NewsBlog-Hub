@@ -14,7 +14,7 @@ import homebg from "./assets/home-bg.jpg";
 function App() {
   return (
     <Router>
-      <div className="w-full min-h-screen bg-[#1b1b1c] pt-13">
+      <div className="w-full min-h-screen bg-[#111111] pt-15">
         <Navbar />
         <Routes>
           {/* Home Page */}
@@ -49,6 +49,7 @@ function App() {
           {/* Routes */}
           <Route path="/news" element={<NewsPage />} />
           <Route path="/blogs" element={<BlogPage />} />
+          <Route path="/contact" element={<Footer />} />
         </Routes>
         <Footer />
       </div>

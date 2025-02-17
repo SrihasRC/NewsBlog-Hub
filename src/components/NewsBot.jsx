@@ -50,7 +50,7 @@ const NewsBot = () => {
   };
 
   return (
-    <div className="bg-[#1E1E1E] border border-gray-700 rounded-lg p-4 h-[75.1vh] flex flex-col w-[28vw]">
+    <div className="bg-[#111111] border border-gray-700 rounded-lg p-4 h-[75.1vh] flex flex-col w-[28vw]">
       <div className="flex items-center gap-2 mb-4">
         <h2 className="text-xl font-semibold text-white flex items-center gap-2">
           <FaRobot className="text-blue-400" />
@@ -64,7 +64,7 @@ const NewsBot = () => {
             {error}
           </div>
         ) : response && (
-          <div className="bg-[#252525] p-3 rounded-lg text-gray-300 text-sm leading-relaxed">
+          <div className="bg-[#1b1a1a] p-3 rounded-lg text-gray-300 text-sm leading-relaxed">
             {response}
           </div>
         )}
@@ -72,7 +72,7 @@ const NewsBot = () => {
 
       <div className="relative">
         <textarea
-          className="w-full p-3 pr-12 bg-[#252525] border border-gray-700 rounded-lg text-white placeholder-gray-500 resize-none focus:outline-none focus:border-blue-500 transition-colors duration-200"
+          className="w-full p-3 pr-12 bg-[#202020] border border-gray-700 rounded-lg text-white placeholder-gray-500 resize-none focus:outline-none focus:border-blue-500 transition-colors duration-200"
           placeholder="Ask about today's news..."
           rows="2"
           value={query}

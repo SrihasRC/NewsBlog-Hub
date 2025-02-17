@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaBookmark, FaTags, FaPlus, FaSpinner } from 'react-icons/fa';
 import { supabase } from '../supabaseClient';
-import toast, { Toaster } from 'react-hot-toast';
 
 const BlogPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,8 +40,7 @@ const BlogPage = () => {
     const { data, error } = await query;
 
     if (error) {
-      toast.error('Error fetching posts');
-      console.error('Error:', error);
+      console.error('Error fetching posts:', error);
     } else {
       setPosts(data || []);
     }
@@ -70,12 +68,12 @@ const BlogPage = () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      toast.error('Please log in to create a post');
+      console.log('Please log in to create a post');
       return;
     }
 
     if (!newPost.title || !newPost.content || !newPost.category) {
-      toast.error('Please fill in all required fields');
+      console.log('Please fill in all required fields');
       return;
     }
 
@@ -84,14 +82,13 @@ const BlogPage = () => {
       .insert([{
         ...newPost,
         author_id: user.id,
-        author_name: user.email // You might want to use a proper user profile name
+        author_name: user.email
       }]);
 
     if (error) {
-      toast.error('Error creating post');
-      console.error('Error:', error);
+      console.error('Error creating post:', error);
     } else {
-      toast.success('Post created successfully');
+      console.log('Post created successfully');
       setShowCreateModal(false);
       setNewPost({
         title: '',
@@ -108,7 +105,7 @@ const BlogPage = () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      toast.error('Please log in to bookmark posts');
+      console.log('Please log in to bookmark posts');
       return;
     }
 
@@ -122,10 +119,10 @@ const BlogPage = () => {
         .eq('post_id', postId);
 
       if (error) {
-        toast.error('Error removing bookmark');
+        console.log('Error removing bookmark');
       } else {
         setBookmarks(bookmarks.filter(id => id !== postId));
-        toast.success('Bookmark removed');
+        console.log('Bookmark removed');
       }
     } else {
       const { error } = await supabase
@@ -133,19 +130,18 @@ const BlogPage = () => {
         .insert([{ user_id: user.id, post_id: postId }]);
 
       if (error) {
-        toast.error('Error adding bookmark');
+        console.log('Error adding bookmark');
       } else {
         setBookmarks([...bookmarks, postId]);
-        toast.success('Post bookmarked');
+        console.log('Post bookmarked');
       }
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-8">
-      <Toaster />
+    <div className="max-w-7xl mx-auto py-8 min-h-screen">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Blog</h1>
+        <h1 className="text-3xl font-bold text-white">Blog</h1>
         <div className="flex items-center gap-4">
           <div className="relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -159,7 +155,7 @@ const BlogPage = () => {
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+            className="flex items-center gap-2 bg-blue-500 px-4 py-1.75 rounded-lg hover:bg-blue-600 transition-colors duration-200 text-white"
           >
             <FaPlus />
             Create Post
@@ -171,14 +167,14 @@ const BlogPage = () => {
         {/* Categories Sidebar */}
         <div className="w-64 flex-shrink-0">
           <div className="bg-[#1E1E1E] border border-gray-700 rounded-lg p-4">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-white">
               <FaTags />
               Categories
             </h2>
             <div className="space-y-2">
               <button
                 onClick={() => setSelectedCategory('all')}
-                className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 ${
+                className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer ${
                   selectedCategory === 'all'
                     ? 'bg-blue-500 text-white'
                     : 'hover:bg-[#252525] text-gray-300'
@@ -190,7 +186,7 @@ const BlogPage = () => {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 ${
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer ${
                     selectedCategory === category
                       ? 'bg-blue-500 text-white'
                       : 'hover:bg-[#252525] text-gray-300'
@@ -208,6 +204,10 @@ const BlogPage = () => {
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <FaSpinner className="animate-spin text-4xl text-blue-500" />
+            </div>
+          ) : posts.length===0 ? (
+            <div className="flex items-center justify-center h-64 text-gray-300">
+              No Blogs Available
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -251,7 +251,7 @@ const BlogPage = () => {
         </div>
       </div>
 
-      {/* Create Post Modal */}
+      {/* Create Post */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-[#1E1E1E] rounded-lg p-6 max-w-2xl w-full">
